@@ -24,6 +24,7 @@ def search_files(dir_path):
             result.extend(search_files(complete_file_name))
         if os.path.isfile(complete_file_name):
             result.append(complete_file_name)
+        print("search: " + complete_file_name)
     return result
 
 
@@ -31,7 +32,10 @@ async def get_repeat(file_list) -> dict:
     database = {}
     for file in file_list:
         async with aiofiles.open(file, "rb") as f:
+            file_size = os.stat(file).st_size
+            print("read file[size:{:,d}]: {:s}".format(file_size, file))
             data = await f.read()
+            data = ""
             md5 = hashlib.md5(data).hexdigest()
             if md5 not in database:
                 database[md5] = []
